@@ -1,0 +1,1018 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Joseph Mercedes</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-09-18"><meta name="DC.source" content="DSP_1_Joe_Mercedes.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Joseph Mercedes</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Overview</a></li><li><a href="#2">String 6</a></li><li><a href="#3">String 5</a></li><li><a href="#4">String 4</a></li><li><a href="#5">String 3</a></li><li><a href="#6">String 2</a></li><li><a href="#7">String 1</a></li><li><a href="#8">Play a Song</a></li><li><a href="#9">Note Function</a></li></ul></div><h2>Overview<a name="1"></a></h2><pre class="codeinput"><span class="comment">% From the frequency spectrum of each given string recording, magnitudes were</span>
+<span class="comment">% found and used to develop a model based on exponentially decayed</span>
+<span class="comment">% superpositions of sine waves. The models, in turn, were used to write a</span>
+<span class="comment">% function that would play a given guitar tab.</span>
+</pre><h2>String 6<a name="2"></a></h2><pre class="codeinput">clc; clear; close <span class="string">all</span>;
+
+[v, Fs, nbits]= wavread(<span class="string">'string06.wav'</span>);   <span class="comment">% Reads the string06.wav file and places the amplitudes samples in v</span>
+                                           <span class="comment">% and the sampling rate used in Fs, and the number of bits in nbits</span>
+
+fprintf(<span class="string">'Sampling rate:    Fs = %6.1f samples/sec \n'</span>,Fs);  <span class="comment">% Display the sampling rate to the screen</span>
+fprintf(<span class="string">'nnumber of bits:  n  = %d bits/sample \n\n'</span>,nbits);  <span class="comment">% Display the number of bits to the screen</span>
+
+Ts = 1/Fs;                                 <span class="comment">% Compute the sampling time Ts</span>
+N = length(v);                             <span class="comment">% Check the number of samples in vector v (the waveform)</span>
+t = Ts*[0:1:N-1];                          <span class="comment">% Create time samples separated by the sampling time Ts</span>
+
+df = Fs/N;                                 <span class="comment">% Compute the frequency resolution df of the frequency spectrum</span>
+f = df*[0:1:N-1];                          <span class="comment">% Create the frequency samples separated by the frequency resolution df</span>
+
+Vf  = (1/N)*fft(v);                         <span class="comment">% Compute the frequency spectrum samples using the FFT</span>
+Vfm = abs(Vf)/max(abs(Vf));                 <span class="comment">% Compute the magnitude samples and normalize to 0-1</span>
+
+figure(2)
+plot(f, Vfm, <span class="string">'r-'</span>)                         <span class="comment">% Plot the frequency spectrum (magnitude)</span>
+axis([0 2000 0 1])                         <span class="comment">% Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)</span>
+title(<span class="string">'String 6 - Frequency Spectrum'</span>)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+
+fprintf(<span class="string">'According to the frequency spectrum of the string the peaks are :\n'</span>)
+fprintf(<span class="string">'0.5435 at 82Hz\n'</span>);
+fprintf(<span class="string">'1.0000 at 164Hz\n'</span>);
+fprintf(<span class="string">'0.5796 at 246Hz\n'</span>);
+fprintf(<span class="string">'0.4323 at 328Hz\n'</span>);
+fprintf(<span class="string">'0.04223 at 410Hz\n'</span>);
+fprintf(<span class="string">'0.01019 at 492Hz\n'</span>);
+fprintf(<span class="string">'0.02961 at 574Hz\n'</span>);
+fprintf(<span class="string">'0.02838 at 656Hz\n'</span>);
+fprintf(<span class="string">'0.03048 at 738Hz\n'</span>);
+fprintf(<span class="string">'0.03249 at 820Hz\n'</span>);
+fprintf(<span class="string">'0.02729 at 902Hz\n'</span>);
+
+<span class="comment">% Taking into account the peaks of the frequency spectrum and the</span>
+<span class="comment">% exponential decay, we arrive at the following model:</span>
+
+vmodelstring6 = exp(-t/1.8).*(0.5435*sin(2*pi*82*t) + sin(2*pi*2*82*t) + 0.5796*sin(2*pi*3*82*t) + 0.4323*sin(2*pi*4*82*t)<span class="keyword">...</span>
++ 0.04223*sin(2*pi*5*82*t) + 0.01019*sin(2*pi*6*82*t) + 0.02961*sin(2*pi*7*82*t) + 0.02838*sin(2*pi*8*82*t)<span class="keyword">...</span>
++ 0.03048*sin(2*pi*9*82*t) + 0.03249*sin(2*pi*10*82*t) + 0.02729*sin(2*pi*11*82*t));
+
+<span class="comment">% Comparing the recording of string 6 with our model, we arrive at the</span>
+<span class="comment">% following:</span>
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, <span class="string">'b-'</span>)
+title(<span class="string">'String 6 Comparison'</span>)
+legend(<span class="string">'recording'</span>)
+subplot(2,1,2)
+plot(t, vmodelstring6, <span class="string">'r-'</span>)
+legend(<span class="string">'model'</span>)
+xlabel(<span class="string">'time in seconds'</span>)
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring6, Fs)
+</pre><pre class="codeoutput">Sampling rate:    Fs = 8000.0 samples/sec 
+nnumber of bits:  n  = 16 bits/sample 
+
+According to the frequency spectrum of the string the peaks are :
+0.5435 at 82Hz
+1.0000 at 164Hz
+0.5796 at 246Hz
+0.4323 at 328Hz
+0.04223 at 410Hz
+0.01019 at 492Hz
+0.02961 at 574Hz
+0.02838 at 656Hz
+0.03048 at 738Hz
+0.03249 at 820Hz
+0.02729 at 902Hz
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_01.png" alt=""> <img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_02.png" alt=""> <h2>String 5<a name="3"></a></h2><pre class="codeinput">clc; clear; close <span class="string">all</span>;
+
+[v, Fs, nbits]= wavread(<span class="string">'string05.wav'</span>);   <span class="comment">% Reads the string05.wav file and places the amplitudes samples in v</span>
+                                           <span class="comment">% and the sampling rate used in Fs, and the number of bits in nbits</span>
+
+fprintf(<span class="string">'Sampling rate:    Fs = %6.1f samples/sec \n'</span>,Fs);  <span class="comment">% Display the sampling rate to the screen</span>
+fprintf(<span class="string">'nnumber of bits:  n  = %d bits/sample \n'</span>,nbits);  <span class="comment">% Display the number of bits to the screen</span>
+
+Ts = 1/Fs;                                 <span class="comment">% Compute the sampling time Ts</span>
+N = length(v);                             <span class="comment">% Check the number of samples in vector v (the waveform)</span>
+t = Ts*[0:1:N-1];                          <span class="comment">% Create time samples separated by the sampling time Ts</span>
+
+df = Fs/N;                                 <span class="comment">% Compute the frequency resolution df of the frequency spectrum</span>
+f = df*[0:1:N-1];                          <span class="comment">% Create the frequency samples separated by the frequency resolution df</span>
+
+Vf  = (1/N)*fft(v);                         <span class="comment">% Compute the frequency spectrum samples using the FFT</span>
+Vfm = abs(Vf)/max(abs(Vf));                 <span class="comment">% Compute the magnitude samples and normalize to 0-1</span>
+
+figure(2)
+plot(f, Vfm, <span class="string">'r-'</span>)                         <span class="comment">% Plot the frequency spectrum (magnitude)</span>
+axis([0 2000 0 1])                         <span class="comment">% Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)</span>
+title(<span class="string">'String 5 - Frequency Spectrum'</span>)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+
+fprintf(<span class="string">'According to the frequency spectrum of the string the peaks are:'</span>);
+fprintf(<span class="string">'0.8699 at 110Hz'</span>);
+fprintf(<span class="string">'1.0000 at 220Hz'</span>);
+fprintf(<span class="string">'0.8351 at 330Hz'</span>);
+fprintf(<span class="string">'0.3423 at 440Hz'</span>);
+fprintf(<span class="string">'0.09942 at 550Hz'</span>);
+fprintf(<span class="string">'0.04029 at 660Hz'</span>);
+fprintf(<span class="string">'0.006155 at 770Hz'</span>);
+fprintf(<span class="string">'0.01486 at 880Hz'</span>);
+fprintf(<span class="string">'0.01224 at 990Hz'</span>);
+fprintf(<span class="string">'0.01422 at 1100Hz'</span>);
+fprintf(<span class="string">'0.009308 at 1210Hz'</span>);
+
+<span class="comment">% Taking into account the peaks of the frequency spectrum and the</span>
+<span class="comment">% exponential decay, we arrive at the following model:</span>
+
+vmodelstring5 = exp(-t/1.8).*(0.8699*sin(2*pi*110*t) + sin(2*pi*2*110*t) + 0.8351*sin(2*pi*3*110*t) + 0.3423*sin(2*pi*4*110*t)<span class="keyword">...</span>
++ 0.09942*sin(2*pi*5*110*t) + 0.04029*sin(2*pi*6*110*t) + 0.006155*sin(2*pi*7*110*t) + 0.01486*sin(2*pi*8*110*t)<span class="keyword">...</span>
++ 0.01224*sin(2*pi*9*110*t) + 0.01422*sin(2*pi*10*110*t) + 0.009308*sin(2*pi*11*110*t));
+
+<span class="comment">% Comparing the recording of string 5 with our model, we arrive at the</span>
+<span class="comment">% following:</span>
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, <span class="string">'b-'</span>)
+title(<span class="string">'String 5 Comparison'</span>)
+legend(<span class="string">'recording'</span>)
+subplot(2,1,2)
+plot(t, vmodelstring5, <span class="string">'r-'</span>)
+legend(<span class="string">'model'</span>)
+xlabel(<span class="string">'time in seconds'</span>)
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring5, Fs)
+</pre><pre class="codeoutput">Sampling rate:    Fs = 8000.0 samples/sec 
+nnumber of bits:  n  = 16 bits/sample 
+According to the frequency spectrum of the string the peaks are:0.8699 at 110Hz1.0000 at 220Hz0.8351 at 330Hz0.3423 at 440Hz0.09942 at 550Hz0.04029 at 660Hz0.006155 at 770Hz0.01486 at 880Hz0.01224 at 990Hz0.01422 at 1100Hz0.009308 at 1210HzWarning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_03.png" alt=""> <img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_04.png" alt=""> <h2>String 4<a name="4"></a></h2><pre class="codeinput">clc; clear; close <span class="string">all</span>;
+
+[v, Fs, nbits]= wavread(<span class="string">'string04.wav'</span>);   <span class="comment">% Reads the string04.wav file and places the amplitudes samples in v</span>
+                                           <span class="comment">% and the sampling rate used in Fs, and the number of bits in nbits</span>
+
+fprintf(<span class="string">'Sampling rate:    Fs = %6.1f samples/sec \n'</span>,Fs);  <span class="comment">% Display the sampling rate to the screen</span>
+fprintf(<span class="string">'nnumber of bits:  n  = %d bits/sample \n\n'</span>,nbits);  <span class="comment">% Display the number of bits to the screen</span>
+
+Ts = 1/Fs;                                 <span class="comment">% Compute the sampling time Ts</span>
+N = length(v);                             <span class="comment">% Check the number of samples in vector v (the waveform)</span>
+t = Ts*[0:1:N-1];                          <span class="comment">% Create time samples separated by the sampling time Ts</span>
+
+df = Fs/N;                                 <span class="comment">% Compute the frequency resolution df of the frequency spectrum</span>
+f = df*[0:1:N-1];                          <span class="comment">% Create the frequency samples separated by the frequency resolution df</span>
+
+Vf  = (1/N)*fft(v);                         <span class="comment">% Compute the frequency spectrum samples using the FFT</span>
+Vfm = abs(Vf)/max(abs(Vf));                 <span class="comment">% Compute the magnitude samples and normalize to 0-1</span>
+
+figure(2)
+plot(f, Vfm, <span class="string">'r-'</span>)                         <span class="comment">% Plot the frequency spectrum (magnitude)</span>
+axis([0 2000 0 1])                         <span class="comment">% Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)</span>
+title(<span class="string">'String 4 Frequency Spectrum'</span>)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+
+fprintf(<span class="string">'According to the frequency spectrum of the string the peaks are :\n'</span>)
+fprintf(<span class="string">'1.0000 at 147Hz\n'</span>);
+fprintf(<span class="string">'0.8203 at 294Hz\n'</span>);
+fprintf(<span class="string">'0.6749 at 441Hz\n'</span>);
+fprintf(<span class="string">'0.3867 at 588Hz\n'</span>);
+fprintf(<span class="string">'0.04026 at 735Hz\n'</span>);
+fprintf(<span class="string">'0.02066 at 882Hz\n'</span>);
+fprintf(<span class="string">'0.002542 at 1029Hz\n'</span>);
+fprintf(<span class="string">'0.004651 at 1176Hz\n'</span>);
+fprintf(<span class="string">'0.01059 at 1323Hz\n'</span>);
+fprintf(<span class="string">'0.004409 at 1470Hz\n'</span>);
+fprintf(<span class="string">'0.003416 at 1617Hz\n'</span>);
+
+<span class="comment">% Taking into account the peaks of the frequency spectrum and the</span>
+<span class="comment">% exponential decay, we arrive at the following model:</span>
+
+vmodelstring4 = exp(-t/1.8).*(sin(2*pi*147*t) + 0.8203*sin(2*pi*2*147*t) + 0.6749*sin(2*pi*3*147*t) + 0.3867*sin(2*pi*4*147*t)<span class="keyword">...</span>
++ 0.04026*sin(2*pi*5*147*t) + 0.02066*sin(2*pi*6*147*t) + 0.002542*sin(2*pi*7*147*t) + 0.004651*sin(2*pi*8*147*t)<span class="keyword">...</span>
++ 0.01059*sin(2*pi*9*147*t) + 0.004409*sin(2*pi*10*147*t) + 0.003416*sin(2*pi*11*147*t));
+
+<span class="comment">% Comparing the recording of string 4 with our model, we arrive at the</span>
+<span class="comment">% following:</span>
+
+figure(3)
+subplot(2,1,1)
+title(<span class="string">'String 4 Comparison'</span>)
+plot(t, v, <span class="string">'b-'</span>)
+legend(<span class="string">'recording'</span>)
+subplot(2,1,2)
+plot(t, vmodelstring4, <span class="string">'r-'</span>)
+legend(<span class="string">'model'</span>)
+xlabel(<span class="string">'time in seconds'</span>)
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring4, Fs)
+</pre><pre class="codeoutput">Sampling rate:    Fs = 8000.0 samples/sec 
+nnumber of bits:  n  = 16 bits/sample 
+
+According to the frequency spectrum of the string the peaks are :
+1.0000 at 147Hz
+0.8203 at 294Hz
+0.6749 at 441Hz
+0.3867 at 588Hz
+0.04026 at 735Hz
+0.02066 at 882Hz
+0.002542 at 1029Hz
+0.004651 at 1176Hz
+0.01059 at 1323Hz
+0.004409 at 1470Hz
+0.003416 at 1617Hz
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_05.png" alt=""> <img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_06.png" alt=""> <h2>String 3<a name="5"></a></h2><pre class="codeinput">clc; clear <span class="string">all</span>; close <span class="string">all</span>;
+
+[v, Fs, nbits]= wavread(<span class="string">'string03.wav'</span>);   <span class="comment">% Reads the string03.wav file and places the amplitudes samples in v</span>
+                                           <span class="comment">% and the sampling rate used in Fs, and the number of bits in nbits</span>
+
+fprintf(<span class="string">'Sampling rate:    Fs = %6.1f samples/sec \n'</span>,Fs);  <span class="comment">% Display the sampling rate to the screen</span>
+fprintf(<span class="string">'nnumber of bits:  n  = %d bits/sample \n\n'</span>,nbits);  <span class="comment">% Display the number of bits to the screen</span>
+
+Ts = 1/Fs;                                 <span class="comment">% Compute the sampling time Ts</span>
+N = length(v);                             <span class="comment">% Check the number of samples in vector v (the waveform)</span>
+t = Ts*[0:1:N-1];                          <span class="comment">% Create time samples separated by the sampling time Ts</span>
+
+df = Fs/N;                                 <span class="comment">% Compute the frequency resolution df of the frequency spectrum</span>
+f = df*[0:1:N-1];                          <span class="comment">% Create the frequency samples separated by the frequency resolution df</span>
+
+Vf  = (1/N)*fft(v);                         <span class="comment">% Compute the frequency spectrum samples using the FFT</span>
+Vfm = abs(Vf)/max(abs(Vf));                 <span class="comment">% Compute the magnitude samples and normalize to 0-1</span>
+
+figure(2)
+plot(f, Vfm, <span class="string">'r-'</span>)                         <span class="comment">% Plot the frequency spectrum (magnitude)</span>
+axis([0 2000 0 1])                         <span class="comment">% Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)</span>
+title(<span class="string">'String 3 - Frequency Spectrum'</span>)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+
+fprintf(<span class="string">'According to the frequency spectrum of the string the peaks are :\n'</span>)
+fprintf(<span class="string">'0.3981 at 196Hz\n'</span>);
+fprintf(<span class="string">'1.000 at 362Hz\n'</span>);
+fprintf(<span class="string">'0.4618 at 588Hz\n'</span>);
+fprintf(<span class="string">'0.1437 at 784Hz\n'</span>);
+fprintf(<span class="string">'0.05462 at 980Hz\n'</span>);
+fprintf(<span class="string">'0.01186 at 1176Hz\n'</span>);
+fprintf(<span class="string">'0.002031 at 1372Hz\n'</span>);
+fprintf(<span class="string">'0.005855 at 1568Hz\n'</span>);
+fprintf(<span class="string">'0.003145 at 1764Hz\n'</span>);
+
+<span class="comment">% Taking into account the peaks of the frequency spectrum and the</span>
+<span class="comment">% exponential decay, we arrive at the following model:</span>
+
+vmodelstring3 = exp(-t/1.8).*(0.3981*sin(2*pi*196*t) + sin(2*pi*2*196*t) + 0.4618*sin(2*pi*3*196*t) + 0.1437*sin(2*pi*4*196*t)<span class="keyword">...</span>
++ 0.05462*sin(2*pi*5*196*t) + 0.01186*sin(2*pi*6*196*t) + 0.002031*sin(2*pi*7*196*t) + 0.005855*sin(2*pi*8*196*t)<span class="keyword">...</span>
++ 0.003145*sin(2*pi*9*196*t));
+
+<span class="comment">% Comparing the recording of string 3 with our model, we arrive at the</span>
+<span class="comment">% following:</span>
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, <span class="string">'b-'</span>)
+title(<span class="string">'String 3 Comparison'</span>)
+legend(<span class="string">'recording'</span>)
+subplot(2,1,2)
+plot(t, vmodelstring3, <span class="string">'r-'</span>)
+legend(<span class="string">'model'</span>)
+xlabel(<span class="string">'time in seconds'</span>)
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring3, Fs)
+</pre><pre class="codeoutput">Sampling rate:    Fs = 8000.0 samples/sec 
+nnumber of bits:  n  = 16 bits/sample 
+
+According to the frequency spectrum of the string the peaks are :
+0.3981 at 196Hz
+1.000 at 362Hz
+0.4618 at 588Hz
+0.1437 at 784Hz
+0.05462 at 980Hz
+0.01186 at 1176Hz
+0.002031 at 1372Hz
+0.005855 at 1568Hz
+0.003145 at 1764Hz
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_07.png" alt=""> <img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_08.png" alt=""> <h2>String 2<a name="6"></a></h2><pre class="codeinput">clc; clear <span class="string">all</span>; close <span class="string">all</span>;
+
+[v, Fs, nbits]= wavread(<span class="string">'string02.wav'</span>);   <span class="comment">% Reads the string02.wav file and places the amplitudes samples in v</span>
+                                           <span class="comment">% and the sampling rate used in Fs, and the number of bits in nbits</span>
+
+fprintf(<span class="string">'Sampling rate:    Fs = %6.1f samples/sec \n'</span>,Fs);  <span class="comment">% Display the sampling rate to the screen</span>
+fprintf(<span class="string">'nnumber of bits:  n  = %d bits/sample \n\n'</span>,nbits);  <span class="comment">% Display the number of bits to the screen</span>
+
+Ts = 1/Fs;                                 <span class="comment">% Compute the sampling time Ts</span>
+N = length(v);                             <span class="comment">% Check the number of samples in vector v (the waveform)</span>
+t = Ts*[0:1:N-1];                          <span class="comment">% Create time samples separated by the sampling time Ts</span>
+
+df = Fs/N;                                 <span class="comment">% Compute the frequency resolution df of the frequency spectrum</span>
+f = df*[0:1:N-1];                          <span class="comment">% Create the frequency samples separated by the frequency resolution df</span>
+
+Vf  = (1/N)*fft(v);                         <span class="comment">% Compute the frequency spectrum samples using the FFT</span>
+Vfm = abs(Vf)/max(abs(Vf));                 <span class="comment">% Compute the magnitude samples and normalize to 0-1</span>
+
+figure(2)
+plot(f, Vfm, <span class="string">'r-'</span>)                         <span class="comment">% Plot the frequency spectrum (magnitude)</span>
+axis([0 2000 0 1])                         <span class="comment">% Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)</span>
+title(<span class="string">'String 2 - Frequency Spectrum'</span>)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+
+fprintf(<span class="string">'According to the frequency spectrum of the string the peaks are :\n'</span>)
+fprintf(<span class="string">'1.0000 at 247Hz\n'</span>);
+fprintf(<span class="string">'0.7518 at 494Hz\n'</span>);
+fprintf(<span class="string">'0.3815 at 741Hz\n'</span>);
+fprintf(<span class="string">'0.1095 at 988Hz\n'</span>);
+fprintf(<span class="string">'0.03492 at 1235Hz\n'</span>);
+fprintf(<span class="string">'0.00826 at 1482Hz\n'</span>);
+
+<span class="comment">% Taking into account the peaks of the frequency spectrum and the</span>
+<span class="comment">% exponential decay, we arrive at the following model:</span>
+
+vmodelstring2 = exp(-t/1.8).*(sin(2*pi*247*t) + 0.7518*sin(2*pi*2*247*t) + 0.3815*sin(2*pi*3*247*t) + 0.1095*sin(2*pi*4*247*t)<span class="keyword">...</span>
++ 0.03492*sin(2*pi*5*247*t) + 0.00826*sin(2*pi*6*247*t));
+
+<span class="comment">% Comparing the recording of string 2 with our model, we arrive at the</span>
+<span class="comment">% following:</span>
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, <span class="string">'b-'</span>)
+title(<span class="string">'String 2 Comparison'</span>)
+legend(<span class="string">'recording'</span>)
+subplot(2,1,2)
+plot(t, vmodelstring2, <span class="string">'r-'</span>)
+legend(<span class="string">'model'</span>)
+xlabel(<span class="string">'time in seconds'</span>)
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring2, Fs)
+</pre><pre class="codeoutput">Sampling rate:    Fs = 8000.0 samples/sec 
+nnumber of bits:  n  = 16 bits/sample 
+
+According to the frequency spectrum of the string the peaks are :
+1.0000 at 247Hz
+0.7518 at 494Hz
+0.3815 at 741Hz
+0.1095 at 988Hz
+0.03492 at 1235Hz
+0.00826 at 1482Hz
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_09.png" alt=""> <img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_10.png" alt=""> <h2>String 1<a name="7"></a></h2><pre class="codeinput">clc; clear <span class="string">all</span>; close <span class="string">all</span>;
+
+[v, Fs, nbits]= wavread(<span class="string">'string01.wav'</span>);   <span class="comment">% Reads the string01.wav file and places the amplitudes samples in v</span>
+                                           <span class="comment">% and the sampling rate used in Fs, and the number of bits in nbits</span>
+
+fprintf(<span class="string">'Sampling rate:    Fs = %6.1f samples/sec \n'</span>,Fs);  <span class="comment">% Display the sampling rate to the screen</span>
+fprintf(<span class="string">'nnumber of bits:  n  = %d bits/sample \n\n'</span>,nbits);  <span class="comment">% Display the number of bits to the screen</span>
+
+Ts = 1/Fs;                                 <span class="comment">% Compute the sampling time Ts</span>
+N = length(v);                             <span class="comment">% Check the number of samples in vector v (the waveform)</span>
+t = Ts*[0:1:N-1];                          <span class="comment">% Create time samples separated by the sampling time Ts</span>
+
+df = Fs/N;                                 <span class="comment">% Compute the frequency resolution df of the frequency spectrum</span>
+f = df*[0:1:N-1];                          <span class="comment">% Create the frequency samples separated by the frequency resolution df</span>
+
+Vf  = (1/N)*fft(v);                         <span class="comment">% Compute the frequency spectrum samples using the FFT</span>
+Vfm = abs(Vf)/max(abs(Vf));                 <span class="comment">% Compute the magnitude samples and normalize to 0-1</span>
+
+figure(2)
+plot(f, Vfm, <span class="string">'r-'</span>)                         <span class="comment">% Plot the frequency spectrum (magnitude)</span>
+axis([0 2000 0 1])                         <span class="comment">% Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)</span>
+title(<span class="string">'String 1 - Frequency Spectrum'</span>)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+
+fprintf(<span class="string">'According to the frequency spectrum of the string the peaks are :\n'</span>)
+fprintf(<span class="string">'1.0000 at 330Hz\n'</span>);
+fprintf(<span class="string">'0.5258 at 660Hz\n'</span>);
+fprintf(<span class="string">'0.2194 at 990Hz\n'</span>);
+fprintf(<span class="string">'0.01046 at 1320Hz\n'</span>);
+fprintf(<span class="string">'0.0158 at 1650Hz\n'</span>);
+
+<span class="comment">% Taking into account the peaks of the frequency spectrum and the</span>
+<span class="comment">% exponential decay, we arrive at the following model:</span>
+
+vmodelstring1 = exp(-t/1.8).*(sin(2*pi*330*t) + 0.5258*sin(2*pi*2*330*t) + 0.2194*sin(2*pi*3*330*t) + 0.01046*sin(2*pi*4*330*t)<span class="keyword">...</span>
++ 0.0158*sin(2*pi*5*330*t));
+
+<span class="comment">% Comparing the recording of string 1 with our model, we arrive at the</span>
+<span class="comment">% following:</span>
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, <span class="string">'b-'</span>)
+title(<span class="string">'String 1 Comparison'</span>)
+legend(<span class="string">'recording'</span>)
+subplot(2,1,2)
+plot(t, vmodelstring1, <span class="string">'r-'</span>)
+legend(<span class="string">'model'</span>)
+xlabel(<span class="string">'time in seconds'</span>)
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring1, Fs)
+</pre><pre class="codeoutput">Sampling rate:    Fs = 8000.0 samples/sec 
+nnumber of bits:  n  = 16 bits/sample 
+
+According to the frequency spectrum of the string the peaks are :
+1.0000 at 330Hz
+0.5258 at 660Hz
+0.2194 at 990Hz
+0.01046 at 1320Hz
+0.0158 at 1650Hz
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_11.png" alt=""> <img vspace="5" hspace="5" src="DSP_1_Joe_Mercedes_12.png" alt=""> <h2>Play a Song<a name="8"></a></h2><pre class="codeinput"><span class="comment">% clc; clear all; close all;</span>
+<span class="comment">%</span>
+<span class="comment">% nbits = 16;</span>
+<span class="comment">% Fs    = 8000;</span>
+<span class="comment">% Ts    = 1/Fs;</span>
+<span class="comment">% measure  = 2;</span>
+<span class="comment">% t1    = [0:Ts:measure];</span>
+<span class="comment">% t2    = [0:Ts:measure/2];</span>
+<span class="comment">% t4    = [0:Ts:measure/4];</span>
+<span class="comment">%</span>
+<span class="comment">% vt1 = [(note(5,2,t4)+note(4,4,t4)) (note(5,2,t4)+note(4,4,t4)) (note(5,2,t4)+note(4,6,t4)) (note(5,2,t4)+note(4,7,t4))];</span>
+<span class="comment">% vt2 = [(note(5,0,t4)+note(4,2,t4)) (note(5,0,t4)+note(4,2,t4)) (note(5,0,t4)+note(4,4,t4)) (note(4,5,t4)+note(4,5,t4))];</span>
+<span class="comment">%</span>
+<span class="comment">% vt = [vt1 vt2];</span>
+<span class="comment">%</span>
+<span class="comment">% vout = vt/max(vt);</span>
+<span class="comment">% sound(vout, Fs)</span>
+<span class="comment">% wavwrite(vout, Fs, nbits, 'song.wav');</span>
+</pre><h2>Note Function<a name="9"></a></h2><pre class="codeinput"><span class="comment">% function v = note(string, fret, t)</span>
+<span class="comment">%     if string == 6</span>
+<span class="comment">%         fx = 82*2^(fret/12);</span>
+<span class="comment">%         v = exp(-t/1.8).*(0.5435*sin(2*pi*fx*t) + sin(2*pi*2*fx*t) + 0.5796*sin(2*pi*3*fx*t) + 0.4323*sin(2*pi*4*fx*t)...</span>
+<span class="comment">%         + 0.04223*sin(2*pi*5*fx*t) + 0.01019*sin(2*pi*6*fx*t) + 0.02961*sin(2*pi*7*fx*t) + 0.02838*sin(2*pi*8*fx*t)...</span>
+<span class="comment">%         + 0.03048*sin(2*pi*9*fx*t) + 0.03249*sin(2*pi*10*fx*t) + 0.02729*sin(2*pi*11*fx*t));</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%     if string == 5</span>
+<span class="comment">%         fx = 110*2^(fret/12);</span>
+<span class="comment">%         v = exp(-t/1.8).*(0.8699*sin(2*pi*fx*t) + sin(2*pi*2*fx*t) + 0.8351*sin(2*pi*3*fx*t) + 0.3423*sin(2*pi*4*fx*t)...</span>
+<span class="comment">%         + 0.09942*sin(2*pi*5*fx*t) + 0.04029*sin(2*pi*6*fx*t) + 0.006155*sin(2*pi*7*fx*t) + 0.01486*sin(2*pi*8*fx*t)...</span>
+<span class="comment">%         + 0.01224*sin(2*pi*9*fx*t) + 0.01422*sin(2*pi*10*fx*t) + 0.009308*sin(2*pi*11*fx*t));</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%     if string == 4</span>
+<span class="comment">%          fx = 147*2^(fret/12);</span>
+<span class="comment">%          v = exp(-t/1.8).*(sin(2*pi*fx*t) + 0.8203*sin(2*pi*2*fx*t) + 0.6749*sin(2*pi*3*fx*t) + 0.3867*sin(2*pi*4*fx*t)...</span>
+<span class="comment">%          + 0.04026*sin(2*pi*5*fx*t) + 0.02066*sin(2*pi*6*fx*t) + 0.002542*sin(2*pi*7*fx*t) + 0.004651*sin(2*pi*8*fx*t)...</span>
+<span class="comment">%          + 0.01059*sin(2*pi*9*fx*t) + 0.004409*sin(2*pi*10*fx*t) + 0.003416*sin(2*pi*11*fx*t));</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%     if string == 3</span>
+<span class="comment">%          fx = 196*2^(fret/12);</span>
+<span class="comment">%          v = exp(-t/1.8).*(0.3981*sin(2*pi*fx*t) + sin(2*pi*2*fx*t) + 0.4618*sin(2*pi*3*fx*t) + 0.1437*sin(2*pi*4*fx*t)...</span>
+<span class="comment">%          + 0.05462*sin(2*pi*5*fx*t) + 0.01186*sin(2*pi*6*fx*t) + 0.002031*sin(2*pi*7*fx*t) + 0.005855*sin(2*pi*8*fx*t)...</span>
+<span class="comment">%          + 0.003145*sin(2*pi*9*fx*t));</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%     if string == 2</span>
+<span class="comment">%          fx = 247*2^(fret/12);</span>
+<span class="comment">%          v = exp(-t/1.8).*(sin(2*pi*fx*t) + 0.7518*sin(2*pi*2*fx*t) + 0.3815*sin(2*pi*3*fx*t) + 0.1095*sin(2*pi*4*fx*t)...</span>
+<span class="comment">%          + 0.03492*sin(2*pi*5*fx*t) + 0.00826*sin(2*pi*6*fx*t));</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%     if string == 1</span>
+<span class="comment">%          fx = 330*2^(fret/12);</span>
+<span class="comment">%          v = exp(-t/1.8).*(sin(2*pi*fx*t) + 0.5258*sin(2*pi*2*fx*t) + 0.2194*sin(2*pi*3*fx*t) + 0.01046*sin(2*pi*4*fx*t)...</span>
+<span class="comment">%          + 0.0158*sin(2*pi*5*fx*t));</span>
+<span class="comment">%     end</span>
+<span class="comment">% end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Joseph Mercedes
+
+%% Overview
+
+% From the frequency spectrum of each given string recording, magnitudes were
+% found and used to develop a model based on exponentially decayed
+% superpositions of sine waves. The models, in turn, were used to write a
+% function that would play a given guitar tab.
+
+%% String 6
+
+clc; clear; close all;
+
+[v, Fs, nbits]= wavread('string06.wav');   % Reads the string06.wav file and places the amplitudes samples in v
+                                           % and the sampling rate used in Fs, and the number of bits in nbits
+                                           
+fprintf('Sampling rate:    Fs = %6.1f samples/sec \n',Fs);  % Display the sampling rate to the screen
+fprintf('nnumber of bits:  n  = %d bits/sample \n\n',nbits);  % Display the number of bits to the screen
+
+Ts = 1/Fs;                                 % Compute the sampling time Ts
+N = length(v);                             % Check the number of samples in vector v (the waveform)
+t = Ts*[0:1:N-1];                          % Create time samples separated by the sampling time Ts
+
+df = Fs/N;                                 % Compute the frequency resolution df of the frequency spectrum
+f = df*[0:1:N-1];                          % Create the frequency samples separated by the frequency resolution df
+
+Vf  = (1/N)*fft(v);                         % Compute the frequency spectrum samples using the FFT
+Vfm = abs(Vf)/max(abs(Vf));                 % Compute the magnitude samples and normalize to 0-1
+
+figure(2)
+plot(f, Vfm, 'r-')                         % Plot the frequency spectrum (magnitude)
+axis([0 2000 0 1])                         % Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)  
+title('String 6 - Frequency Spectrum')
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+
+fprintf('According to the frequency spectrum of the string the peaks are :\n')
+fprintf('0.5435 at 82Hz\n');
+fprintf('1.0000 at 164Hz\n');
+fprintf('0.5796 at 246Hz\n');
+fprintf('0.4323 at 328Hz\n');
+fprintf('0.04223 at 410Hz\n');
+fprintf('0.01019 at 492Hz\n');
+fprintf('0.02961 at 574Hz\n');
+fprintf('0.02838 at 656Hz\n');
+fprintf('0.03048 at 738Hz\n');
+fprintf('0.03249 at 820Hz\n');
+fprintf('0.02729 at 902Hz\n');
+
+% Taking into account the peaks of the frequency spectrum and the
+% exponential decay, we arrive at the following model:
+
+vmodelstring6 = exp(-t/1.8).*(0.5435*sin(2*pi*82*t) + sin(2*pi*2*82*t) + 0.5796*sin(2*pi*3*82*t) + 0.4323*sin(2*pi*4*82*t)...
++ 0.04223*sin(2*pi*5*82*t) + 0.01019*sin(2*pi*6*82*t) + 0.02961*sin(2*pi*7*82*t) + 0.02838*sin(2*pi*8*82*t)...
++ 0.03048*sin(2*pi*9*82*t) + 0.03249*sin(2*pi*10*82*t) + 0.02729*sin(2*pi*11*82*t));
+
+% Comparing the recording of string 6 with our model, we arrive at the
+% following:
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, 'b-')
+title('String 6 Comparison')
+legend('recording')
+subplot(2,1,2)
+plot(t, vmodelstring6, 'r-')
+legend('model')
+xlabel('time in seconds')
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring6, Fs)
+
+%% String 5 
+
+clc; clear; close all;
+
+[v, Fs, nbits]= wavread('string05.wav');   % Reads the string05.wav file and places the amplitudes samples in v
+                                           % and the sampling rate used in Fs, and the number of bits in nbits
+                                           
+fprintf('Sampling rate:    Fs = %6.1f samples/sec \n',Fs);  % Display the sampling rate to the screen
+fprintf('nnumber of bits:  n  = %d bits/sample \n',nbits);  % Display the number of bits to the screen
+
+Ts = 1/Fs;                                 % Compute the sampling time Ts
+N = length(v);                             % Check the number of samples in vector v (the waveform)
+t = Ts*[0:1:N-1];                          % Create time samples separated by the sampling time Ts
+
+df = Fs/N;                                 % Compute the frequency resolution df of the frequency spectrum
+f = df*[0:1:N-1];                          % Create the frequency samples separated by the frequency resolution df
+
+Vf  = (1/N)*fft(v);                         % Compute the frequency spectrum samples using the FFT
+Vfm = abs(Vf)/max(abs(Vf));                 % Compute the magnitude samples and normalize to 0-1
+
+figure(2)
+plot(f, Vfm, 'r-')                         % Plot the frequency spectrum (magnitude)
+axis([0 2000 0 1])                         % Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)  
+title('String 5 - Frequency Spectrum')
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+
+fprintf('According to the frequency spectrum of the string the peaks are:');
+fprintf('0.8699 at 110Hz');
+fprintf('1.0000 at 220Hz');
+fprintf('0.8351 at 330Hz');
+fprintf('0.3423 at 440Hz');
+fprintf('0.09942 at 550Hz');
+fprintf('0.04029 at 660Hz');
+fprintf('0.006155 at 770Hz');
+fprintf('0.01486 at 880Hz');
+fprintf('0.01224 at 990Hz');
+fprintf('0.01422 at 1100Hz');
+fprintf('0.009308 at 1210Hz');
+
+% Taking into account the peaks of the frequency spectrum and the
+% exponential decay, we arrive at the following model:
+
+vmodelstring5 = exp(-t/1.8).*(0.8699*sin(2*pi*110*t) + sin(2*pi*2*110*t) + 0.8351*sin(2*pi*3*110*t) + 0.3423*sin(2*pi*4*110*t)...
++ 0.09942*sin(2*pi*5*110*t) + 0.04029*sin(2*pi*6*110*t) + 0.006155*sin(2*pi*7*110*t) + 0.01486*sin(2*pi*8*110*t)...
++ 0.01224*sin(2*pi*9*110*t) + 0.01422*sin(2*pi*10*110*t) + 0.009308*sin(2*pi*11*110*t));
+
+% Comparing the recording of string 5 with our model, we arrive at the
+% following:
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, 'b-')
+title('String 5 Comparison')
+legend('recording')
+subplot(2,1,2)
+plot(t, vmodelstring5, 'r-')
+legend('model')
+xlabel('time in seconds')
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring5, Fs)
+
+%% String 4
+
+clc; clear; close all;
+
+[v, Fs, nbits]= wavread('string04.wav');   % Reads the string04.wav file and places the amplitudes samples in v
+                                           % and the sampling rate used in Fs, and the number of bits in nbits
+                                           
+fprintf('Sampling rate:    Fs = %6.1f samples/sec \n',Fs);  % Display the sampling rate to the screen
+fprintf('nnumber of bits:  n  = %d bits/sample \n\n',nbits);  % Display the number of bits to the screen
+
+Ts = 1/Fs;                                 % Compute the sampling time Ts
+N = length(v);                             % Check the number of samples in vector v (the waveform)
+t = Ts*[0:1:N-1];                          % Create time samples separated by the sampling time Ts
+
+df = Fs/N;                                 % Compute the frequency resolution df of the frequency spectrum
+f = df*[0:1:N-1];                          % Create the frequency samples separated by the frequency resolution df
+
+Vf  = (1/N)*fft(v);                         % Compute the frequency spectrum samples using the FFT
+Vfm = abs(Vf)/max(abs(Vf));                 % Compute the magnitude samples and normalize to 0-1
+
+figure(2)
+plot(f, Vfm, 'r-')                         % Plot the frequency spectrum (magnitude)
+axis([0 2000 0 1])                         % Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)  
+title('String 4 Frequency Spectrum')
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+
+fprintf('According to the frequency spectrum of the string the peaks are :\n')
+fprintf('1.0000 at 147Hz\n');
+fprintf('0.8203 at 294Hz\n');
+fprintf('0.6749 at 441Hz\n');
+fprintf('0.3867 at 588Hz\n');
+fprintf('0.04026 at 735Hz\n');
+fprintf('0.02066 at 882Hz\n');
+fprintf('0.002542 at 1029Hz\n');
+fprintf('0.004651 at 1176Hz\n');
+fprintf('0.01059 at 1323Hz\n');
+fprintf('0.004409 at 1470Hz\n');
+fprintf('0.003416 at 1617Hz\n');
+
+% Taking into account the peaks of the frequency spectrum and the
+% exponential decay, we arrive at the following model:
+
+vmodelstring4 = exp(-t/1.8).*(sin(2*pi*147*t) + 0.8203*sin(2*pi*2*147*t) + 0.6749*sin(2*pi*3*147*t) + 0.3867*sin(2*pi*4*147*t)...
++ 0.04026*sin(2*pi*5*147*t) + 0.02066*sin(2*pi*6*147*t) + 0.002542*sin(2*pi*7*147*t) + 0.004651*sin(2*pi*8*147*t)...
++ 0.01059*sin(2*pi*9*147*t) + 0.004409*sin(2*pi*10*147*t) + 0.003416*sin(2*pi*11*147*t));
+
+% Comparing the recording of string 4 with our model, we arrive at the
+% following:
+
+figure(3)
+subplot(2,1,1)
+title('String 4 Comparison')
+plot(t, v, 'b-')
+legend('recording')
+subplot(2,1,2)
+plot(t, vmodelstring4, 'r-')
+legend('model')
+xlabel('time in seconds')
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring4, Fs)
+
+%% String 3
+
+clc; clear all; close all;
+
+[v, Fs, nbits]= wavread('string03.wav');   % Reads the string03.wav file and places the amplitudes samples in v
+                                           % and the sampling rate used in Fs, and the number of bits in nbits
+                                           
+fprintf('Sampling rate:    Fs = %6.1f samples/sec \n',Fs);  % Display the sampling rate to the screen
+fprintf('nnumber of bits:  n  = %d bits/sample \n\n',nbits);  % Display the number of bits to the screen
+
+Ts = 1/Fs;                                 % Compute the sampling time Ts
+N = length(v);                             % Check the number of samples in vector v (the waveform)
+t = Ts*[0:1:N-1];                          % Create time samples separated by the sampling time Ts
+
+df = Fs/N;                                 % Compute the frequency resolution df of the frequency spectrum
+f = df*[0:1:N-1];                          % Create the frequency samples separated by the frequency resolution df
+
+Vf  = (1/N)*fft(v);                         % Compute the frequency spectrum samples using the FFT
+Vfm = abs(Vf)/max(abs(Vf));                 % Compute the magnitude samples and normalize to 0-1
+
+figure(2)
+plot(f, Vfm, 'r-')                         % Plot the frequency spectrum (magnitude)
+axis([0 2000 0 1])                         % Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)  
+title('String 3 - Frequency Spectrum')
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+
+fprintf('According to the frequency spectrum of the string the peaks are :\n')
+fprintf('0.3981 at 196Hz\n');
+fprintf('1.000 at 362Hz\n');
+fprintf('0.4618 at 588Hz\n');
+fprintf('0.1437 at 784Hz\n');
+fprintf('0.05462 at 980Hz\n');
+fprintf('0.01186 at 1176Hz\n');
+fprintf('0.002031 at 1372Hz\n');
+fprintf('0.005855 at 1568Hz\n');
+fprintf('0.003145 at 1764Hz\n');
+
+% Taking into account the peaks of the frequency spectrum and the
+% exponential decay, we arrive at the following model:
+
+vmodelstring3 = exp(-t/1.8).*(0.3981*sin(2*pi*196*t) + sin(2*pi*2*196*t) + 0.4618*sin(2*pi*3*196*t) + 0.1437*sin(2*pi*4*196*t)...
++ 0.05462*sin(2*pi*5*196*t) + 0.01186*sin(2*pi*6*196*t) + 0.002031*sin(2*pi*7*196*t) + 0.005855*sin(2*pi*8*196*t)...
++ 0.003145*sin(2*pi*9*196*t));
+
+% Comparing the recording of string 3 with our model, we arrive at the
+% following:
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, 'b-')
+title('String 3 Comparison')
+legend('recording')
+subplot(2,1,2)
+plot(t, vmodelstring3, 'r-')
+legend('model')
+xlabel('time in seconds')
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring3, Fs)
+
+%% String 2
+
+clc; clear all; close all;
+
+[v, Fs, nbits]= wavread('string02.wav');   % Reads the string02.wav file and places the amplitudes samples in v
+                                           % and the sampling rate used in Fs, and the number of bits in nbits
+                                           
+fprintf('Sampling rate:    Fs = %6.1f samples/sec \n',Fs);  % Display the sampling rate to the screen
+fprintf('nnumber of bits:  n  = %d bits/sample \n\n',nbits);  % Display the number of bits to the screen
+
+Ts = 1/Fs;                                 % Compute the sampling time Ts
+N = length(v);                             % Check the number of samples in vector v (the waveform)
+t = Ts*[0:1:N-1];                          % Create time samples separated by the sampling time Ts
+
+df = Fs/N;                                 % Compute the frequency resolution df of the frequency spectrum
+f = df*[0:1:N-1];                          % Create the frequency samples separated by the frequency resolution df
+
+Vf  = (1/N)*fft(v);                         % Compute the frequency spectrum samples using the FFT
+Vfm = abs(Vf)/max(abs(Vf));                 % Compute the magnitude samples and normalize to 0-1
+
+figure(2)
+plot(f, Vfm, 'r-')                         % Plot the frequency spectrum (magnitude)
+axis([0 2000 0 1])                         % Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)  
+title('String 2 - Frequency Spectrum')
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+
+fprintf('According to the frequency spectrum of the string the peaks are :\n')
+fprintf('1.0000 at 247Hz\n');
+fprintf('0.7518 at 494Hz\n');
+fprintf('0.3815 at 741Hz\n');
+fprintf('0.1095 at 988Hz\n');
+fprintf('0.03492 at 1235Hz\n');
+fprintf('0.00826 at 1482Hz\n');
+
+% Taking into account the peaks of the frequency spectrum and the
+% exponential decay, we arrive at the following model:
+
+vmodelstring2 = exp(-t/1.8).*(sin(2*pi*247*t) + 0.7518*sin(2*pi*2*247*t) + 0.3815*sin(2*pi*3*247*t) + 0.1095*sin(2*pi*4*247*t)...
++ 0.03492*sin(2*pi*5*247*t) + 0.00826*sin(2*pi*6*247*t));
+
+% Comparing the recording of string 2 with our model, we arrive at the
+% following:
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, 'b-')
+title('String 2 Comparison')
+legend('recording')
+subplot(2,1,2)
+plot(t, vmodelstring2, 'r-')
+legend('model')
+xlabel('time in seconds')
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring2, Fs)
+
+
+%% String 1
+
+clc; clear all; close all;
+
+[v, Fs, nbits]= wavread('string01.wav');   % Reads the string01.wav file and places the amplitudes samples in v
+                                           % and the sampling rate used in Fs, and the number of bits in nbits
+                                           
+fprintf('Sampling rate:    Fs = %6.1f samples/sec \n',Fs);  % Display the sampling rate to the screen
+fprintf('nnumber of bits:  n  = %d bits/sample \n\n',nbits);  % Display the number of bits to the screen
+
+Ts = 1/Fs;                                 % Compute the sampling time Ts
+N = length(v);                             % Check the number of samples in vector v (the waveform)
+t = Ts*[0:1:N-1];                          % Create time samples separated by the sampling time Ts
+
+df = Fs/N;                                 % Compute the frequency resolution df of the frequency spectrum
+f = df*[0:1:N-1];                          % Create the frequency samples separated by the frequency resolution df
+
+Vf  = (1/N)*fft(v);                         % Compute the frequency spectrum samples using the FFT
+Vfm = abs(Vf)/max(abs(Vf));                 % Compute the magnitude samples and normalize to 0-1
+
+figure(2)
+plot(f, Vfm, 'r-')                         % Plot the frequency spectrum (magnitude)
+axis([0 2000 0 1])                         % Restrict the plot to 0 to 2000 (x-axis) and to 0 to 1 (y-axis)  
+title('String 1 - Frequency Spectrum')
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+
+fprintf('According to the frequency spectrum of the string the peaks are :\n')
+fprintf('1.0000 at 330Hz\n');
+fprintf('0.5258 at 660Hz\n');
+fprintf('0.2194 at 990Hz\n');
+fprintf('0.01046 at 1320Hz\n');
+fprintf('0.0158 at 1650Hz\n');
+
+% Taking into account the peaks of the frequency spectrum and the
+% exponential decay, we arrive at the following model:
+
+vmodelstring1 = exp(-t/1.8).*(sin(2*pi*330*t) + 0.5258*sin(2*pi*2*330*t) + 0.2194*sin(2*pi*3*330*t) + 0.01046*sin(2*pi*4*330*t)...
++ 0.0158*sin(2*pi*5*330*t));
+
+% Comparing the recording of string 1 with our model, we arrive at the
+% following:
+
+figure(3)
+subplot(2,1,1)
+plot(t, v, 'b-')
+title('String 1 Comparison')
+legend('recording')
+subplot(2,1,2)
+plot(t, vmodelstring1, 'r-')
+legend('model')
+xlabel('time in seconds')
+
+soundsc(v, Fs)
+pause(1)
+soundsc(vmodelstring1, Fs)
+
+%% Play a Song
+
+% clc; clear all; close all;
+% 
+% nbits = 16;
+% Fs    = 8000;
+% Ts    = 1/Fs;
+% measure  = 2;
+% t1    = [0:Ts:measure];
+% t2    = [0:Ts:measure/2];
+% t4    = [0:Ts:measure/4];
+% 
+% vt1 = [(note(5,2,t4)+note(4,4,t4)) (note(5,2,t4)+note(4,4,t4)) (note(5,2,t4)+note(4,6,t4)) (note(5,2,t4)+note(4,7,t4))];
+% vt2 = [(note(5,0,t4)+note(4,2,t4)) (note(5,0,t4)+note(4,2,t4)) (note(5,0,t4)+note(4,4,t4)) (note(4,5,t4)+note(4,5,t4))];
+% 
+% vt = [vt1 vt2];
+% 
+% vout = vt/max(vt);
+% sound(vout, Fs)
+% wavwrite(vout, Fs, nbits, 'song.wav');
+
+%% Note Function
+
+% function v = note(string, fret, t)
+%     if string == 6
+%         fx = 82*2^(fret/12);
+%         v = exp(-t/1.8).*(0.5435*sin(2*pi*fx*t) + sin(2*pi*2*fx*t) + 0.5796*sin(2*pi*3*fx*t) + 0.4323*sin(2*pi*4*fx*t)...
+%         + 0.04223*sin(2*pi*5*fx*t) + 0.01019*sin(2*pi*6*fx*t) + 0.02961*sin(2*pi*7*fx*t) + 0.02838*sin(2*pi*8*fx*t)...
+%         + 0.03048*sin(2*pi*9*fx*t) + 0.03249*sin(2*pi*10*fx*t) + 0.02729*sin(2*pi*11*fx*t));
+%     end
+% 
+%     if string == 5
+%         fx = 110*2^(fret/12); 
+%         v = exp(-t/1.8).*(0.8699*sin(2*pi*fx*t) + sin(2*pi*2*fx*t) + 0.8351*sin(2*pi*3*fx*t) + 0.3423*sin(2*pi*4*fx*t)...
+%         + 0.09942*sin(2*pi*5*fx*t) + 0.04029*sin(2*pi*6*fx*t) + 0.006155*sin(2*pi*7*fx*t) + 0.01486*sin(2*pi*8*fx*t)...
+%         + 0.01224*sin(2*pi*9*fx*t) + 0.01422*sin(2*pi*10*fx*t) + 0.009308*sin(2*pi*11*fx*t));
+%     end
+%     
+%     if string == 4
+%          fx = 147*2^(fret/12);
+%          v = exp(-t/1.8).*(sin(2*pi*fx*t) + 0.8203*sin(2*pi*2*fx*t) + 0.6749*sin(2*pi*3*fx*t) + 0.3867*sin(2*pi*4*fx*t)...
+%          + 0.04026*sin(2*pi*5*fx*t) + 0.02066*sin(2*pi*6*fx*t) + 0.002542*sin(2*pi*7*fx*t) + 0.004651*sin(2*pi*8*fx*t)...
+%          + 0.01059*sin(2*pi*9*fx*t) + 0.004409*sin(2*pi*10*fx*t) + 0.003416*sin(2*pi*11*fx*t));
+%     end
+%     
+%     if string == 3
+%          fx = 196*2^(fret/12);
+%          v = exp(-t/1.8).*(0.3981*sin(2*pi*fx*t) + sin(2*pi*2*fx*t) + 0.4618*sin(2*pi*3*fx*t) + 0.1437*sin(2*pi*4*fx*t)...
+%          + 0.05462*sin(2*pi*5*fx*t) + 0.01186*sin(2*pi*6*fx*t) + 0.002031*sin(2*pi*7*fx*t) + 0.005855*sin(2*pi*8*fx*t)...
+%          + 0.003145*sin(2*pi*9*fx*t));
+%     end
+%     
+%     if string == 2
+%          fx = 247*2^(fret/12);
+%          v = exp(-t/1.8).*(sin(2*pi*fx*t) + 0.7518*sin(2*pi*2*fx*t) + 0.3815*sin(2*pi*3*fx*t) + 0.1095*sin(2*pi*4*fx*t)...
+%          + 0.03492*sin(2*pi*5*fx*t) + 0.00826*sin(2*pi*6*fx*t));
+%     end
+%     
+%     if string == 1
+%          fx = 330*2^(fret/12);
+%          v = exp(-t/1.8).*(sin(2*pi*fx*t) + 0.5258*sin(2*pi*2*fx*t) + 0.2194*sin(2*pi*3*fx*t) + 0.01046*sin(2*pi*4*fx*t)...
+%          + 0.0158*sin(2*pi*5*fx*t));
+%     end
+% end 
+
+
+##### SOURCE END #####
+--></body></html>

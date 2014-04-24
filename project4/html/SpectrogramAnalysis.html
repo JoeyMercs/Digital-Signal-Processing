@@ -1,0 +1,314 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>SpectrogramAnalysis</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-12-07"><meta name="DC.source" content="SpectrogramAnalysis.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Frequency-Modulated Signals</a></li><li><a href="#3">Narrowband and Wideband Spectrograms</a></li><li><a href="#4">Modified Short-Time Fourier Transforms</a></li></ul></div><pre class="codeinput"><span class="comment">% John Biswakarma, Jennifer Tashman, Joseph Mercedes</span>
+<span class="comment">% ECE 114: MATLAB Assignment #4</span>
+<span class="comment">% Spectrogram Analysis and Applications</span>
+
+close <span class="string">all</span>; clear <span class="string">all</span>; clc;
+
+load <span class="string">s1.mat</span>;
+load <span class="string">s5.mat</span>;
+load <span class="string">vowels.mat</span>;
+</pre><h2>Frequency-Modulated Signals<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Part 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+mu = 4*10^(9);
+chl = 200*10^(-6);
+Fs = 5*10^(6);
+Ts = 1/Fs;
+t = 0:Ts:chl;
+x  = cos(2*pi*mu*(t.^2));
+figure;
+spectrogram(x,triang(256),255,256,Fs);
+
+<span class="comment">% Part 2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% x(t) = cos(2*pi*mu*t.^2)</span>
+
+<span class="comment">% Definition 1:</span>
+<span class="comment">% -&gt; f_1(t) = mu*t</span>
+
+<span class="comment">% Definition 2:</span>
+<span class="comment">% phi(t) = 2*pi*mu*t.^2</span>
+<span class="comment">% -&gt; phi'(t) = 4*pi*mu*t</span>
+<span class="comment">% -&gt; f_2(t) = (1/2pi)phi'(t) = 2*mu*t</span>
+<span class="comment">% The slope of the ridge in the spectrogram corresponds to</span>
+
+<span class="comment">% mu*t corresponds to the slope of the ridge in the spectrogram</span>
+
+<span class="comment">% Part 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+mu2 = 10^(10);
+x2  = cos(2*pi*mu2*(t.^2));
+figure;
+spectrogram(x2,triang(256),255,256,Fs);
+</pre><img vspace="5" hspace="5" src="SpectrogramAnalysis_01.png" alt=""> <img vspace="5" hspace="5" src="SpectrogramAnalysis_02.png" alt=""> <h2>Narrowband and Wideband Spectrograms<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Part 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% Assume s1 and s5 are sampled at 8000Hz</span>
+Fs2 = 8000;
+
+figure;
+spectrogram(s1,triang(512),511,512,Fs2);
+
+<span class="comment">% This spectrogram show that the fundamental frequency is at</span>
+<span class="comment">% approximately 300Hz</span>
+
+figure;
+spectrogram(s5,triang(512),511,512,Fs2);
+
+<span class="comment">% This spectrogram show that the fundamental frequency is at</span>
+<span class="comment">% approximately 150Hz</span>
+
+<span class="comment">% Part 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">% The following 2 figures are WideBand Spectrograms for s1 and s5</span>
+
+figure;
+spectrogram(s1,triang(128),127,1024,Fs2)
+
+figure;
+spectrogram(s5,triang(128),127,1024,Fs2)
+</pre><img vspace="5" hspace="5" src="SpectrogramAnalysis_03.png" alt=""> <img vspace="5" hspace="5" src="SpectrogramAnalysis_04.png" alt=""> <img vspace="5" hspace="5" src="SpectrogramAnalysis_05.png" alt=""> <img vspace="5" hspace="5" src="SpectrogramAnalysis_06.png" alt=""> <h2>Modified Short-Time Fourier Transforms<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Part 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+x = spectrogram(vowels,rectwin(256),128,1024,8000);
+
+g = stft(x,61);
+
+g = g*(1/max(g));
+g = padarray(g,64,<span class="string">'post'</span>);
+soundsc(g,8000)
+
+v = vowels*(1/max(vowels));
+
+f = 1:8000;
+diff = abs(abs(g)-abs(v));
+
+figure;
+plot(f,diff)
+
+<span class="comment">% Part 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+Fs2 = 8000;
+S = spectrogram(vowels,rectwin(256),128,1024,Fs2);
+
+<span class="comment">% Throws out every other column:</span>
+<span class="keyword">for</span> kk = 0:60
+
+    <span class="keyword">if</span> kk == 0
+        X = S(:,1);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> mod(kk,2) == 1 &amp;&amp; kk ~= 0
+        X = horzcat(X,S(:,kk+1));
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+n = stft(X,30);
+n = n*(1/max(n));
+
+soundsc(n,8000);
+
+f1 = 1:8000;
+f2 = 1:3968;
+
+v = vowels*(1/max(vowels));
+
+figure;
+subplot(2,1,1)
+plot(f1,v)
+title(<span class="string">'Original Vowels'</span>)
+subplot(2,1,2)
+plot(f2,n)
+title(<span class="string">'New Sampled Vowels'</span>)
+</pre><img vspace="5" hspace="5" src="SpectrogramAnalysis_07.png" alt=""> <img vspace="5" hspace="5" src="SpectrogramAnalysis_08.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% John Biswakarma, Jennifer Tashman, Joseph Mercedes
+% ECE 114: MATLAB Assignment #4
+% Spectrogram Analysis and Applications
+
+close all; clear all; clc;
+
+load s1.mat;
+load s5.mat;
+load vowels.mat;
+
+%% Frequency-Modulated Signals
+
+% Part 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+mu = 4*10^(9);
+chl = 200*10^(-6);
+Fs = 5*10^(6);
+Ts = 1/Fs;
+t = 0:Ts:chl;
+x  = cos(2*pi*mu*(t.^2));
+figure;
+spectrogram(x,triang(256),255,256,Fs);
+
+% Part 2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% x(t) = cos(2*pi*mu*t.^2)
+
+% Definition 1: 
+% -> f_1(t) = mu*t
+
+% Definition 2:
+% phi(t) = 2*pi*mu*t.^2
+% -> phi'(t) = 4*pi*mu*t
+% -> f_2(t) = (1/2pi)phi'(t) = 2*mu*t
+% The slope of the ridge in the spectrogram corresponds to 
+
+% mu*t corresponds to the slope of the ridge in the spectrogram
+
+% Part 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mu2 = 10^(10);
+x2  = cos(2*pi*mu2*(t.^2));
+figure;
+spectrogram(x2,triang(256),255,256,Fs);
+
+%% Narrowband and Wideband Spectrograms
+
+% Part 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Assume s1 and s5 are sampled at 8000Hz
+Fs2 = 8000;
+
+figure;
+spectrogram(s1,triang(512),511,512,Fs2);
+
+% This spectrogram show that the fundamental frequency is at
+% approximately 300Hz
+
+figure;
+spectrogram(s5,triang(512),511,512,Fs2);
+
+% This spectrogram show that the fundamental frequency is at
+% approximately 150Hz
+
+% Part 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% The following 2 figures are WideBand Spectrograms for s1 and s5
+
+figure;
+spectrogram(s1,triang(128),127,1024,Fs2)
+
+figure;
+spectrogram(s5,triang(128),127,1024,Fs2)
+
+%% Modified Short-Time Fourier Transforms
+
+% Part 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+x = spectrogram(vowels,rectwin(256),128,1024,8000);
+
+g = stft(x,61);
+
+g = g*(1/max(g));
+g = padarray(g,64,'post');
+soundsc(g,8000)
+
+v = vowels*(1/max(vowels));
+
+f = 1:8000;
+diff = abs(abs(g)-abs(v));
+
+figure;
+plot(f,diff)
+
+% Part 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Fs2 = 8000;
+S = spectrogram(vowels,rectwin(256),128,1024,Fs2);
+
+% Throws out every other column:
+for kk = 0:60
+    
+    if kk == 0
+        X = S(:,1);
+    end
+    
+    if mod(kk,2) == 1 && kk ~= 0
+        X = horzcat(X,S(:,kk+1));
+    end
+    
+end
+
+n = stft(X,30);
+n = n*(1/max(n));
+
+soundsc(n,8000);
+
+f1 = 1:8000;
+f2 = 1:3968;
+
+v = vowels*(1/max(vowels));
+
+figure;
+subplot(2,1,1)
+plot(f1,v)
+title('Original Vowels')
+subplot(2,1,2)
+plot(f2,n)
+title('New Sampled Vowels')
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,687 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>b2005</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-11-20"><meta name="DC.source" content="b2005.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Butterworth Filter</a></li><li><a href="#3">Chebyshev&nbsp;Type&nbsp;I Filter</a></li><li><a href="#4">Chebyshev Type II Filter</a></li><li><a href="#5">Elliptic Filter</a></li><li><a href="#6">Parks McClellan</a></li><li><a href="#7">Kaiser</a></li></ul></div><pre class="codeinput"><span class="comment">% Jen Tashman, Joe Marcedes, John Biswakarma</span>
+<span class="comment">% ECE 114</span>
+<span class="comment">% MATLAB Assignment #3 (2005b): Removing Noise from a Speech Signal</span>
+
+
+clear <span class="string">all</span>; close <span class="string">all</span>; clc;
+
+load <span class="string">projIB.mat</span>
+</pre><h2>Butterworth Filter<a name="2"></a></h2><pre class="codeinput">mybutt = myButter();
+
+load <span class="string">ButSOS-G.mat</span>
+
+<span class="comment">%ButterworthOrder = filtord(ButSOS)</span>
+
+figure(<span class="string">'Name'</span>,<span class="string">'Butterworth Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(3,1,1);
+[h,w] = freqz(mybutt);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title(<span class="string">'Magnitude Response'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (dB)'</span>);
+
+subplot(3,1,2)
+[gd] = grpdelay(mybutt);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title(<span class="string">'Group Delay'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Group Delay (in samples)'</span>);
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title(<span class="string">'Magnitude Response of Passpand Ripple'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (linear)'</span>);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Butterworth Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(2,1,1);
+x = filter(mybutt,noisy);
+y = x(1:100);
+stem(y);
+title(<span class="string">'Implulse Response'</span>);
+xlabel(<span class="string">'Samples'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(ButSOS, ButG);
+zplane(z,p);
+title(<span class="string">'Pole-Zero Plot'</span>);
+
+<span class="comment">%soundsc(noisy,fs);</span>
+<span class="comment">%soundsc(x,fs);</span>
+</pre><img vspace="5" hspace="5" src="b2005_01.png" alt=""> <img vspace="5" hspace="5" src="b2005_02.png" alt=""> <h2>Chebyshev&nbsp;Type&nbsp;I Filter<a name="3"></a></h2><pre class="codeinput">mycheb1 = myCheby1();
+
+load <span class="string">Cheby1SOS-G.mat</span>
+
+<span class="comment">%Chebyshev1Order = filtord(Cheby1SOS)</span>
+
+figure(<span class="string">'Name'</span>,<span class="string">'Chebychev Type I Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(3,1,1);
+[h,w] = freqz(mycheb1);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title(<span class="string">'Magnitude Response'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (dB)'</span>);
+
+subplot(3,1,2)
+[gd] = grpdelay(mycheb1);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title(<span class="string">'Group Delay'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Group Delay (in samples)'</span>);
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title(<span class="string">'Magnitude Response of Passpand Ripple'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (linear)'</span>);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Chebychev Type I Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(2,1,1);
+x = filter(mycheb1,noisy);
+y = x(1:100);
+stem(y);
+title(<span class="string">'Implulse Response'</span>);
+xlabel(<span class="string">'Samples'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(Cheby1SOS, Cheby1G);
+zplane(z,p);
+title(<span class="string">'Pole-Zero Plot'</span>);
+
+<span class="comment">%soundsc(noisy,fs);</span>
+<span class="comment">%soundsc(x,fs);</span>
+</pre><img vspace="5" hspace="5" src="b2005_03.png" alt=""> <img vspace="5" hspace="5" src="b2005_04.png" alt=""> <h2>Chebyshev Type II Filter<a name="4"></a></h2><pre class="codeinput">mycheb2 = myCheby2();
+
+load <span class="string">Cheby2SOS-G.mat</span>
+
+<span class="comment">%Chebyshev1Order = filtord(Cheby2SOS)</span>
+
+figure(<span class="string">'Name'</span>,<span class="string">'Chebychev Type II Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(3,1,1);
+[h,w] = freqz(mycheb2);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title(<span class="string">'Magnitude Response'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (dB)'</span>);
+
+subplot(3,1,2)
+[gd] = grpdelay(mycheb2);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title(<span class="string">'Group Delay'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Group Delay (in samples)'</span>);
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title(<span class="string">'Magnitude Response of Passpand Ripple'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (linear)'</span>);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Chebychev Type II Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(2,1,1);
+x = filter(mycheb2,noisy);
+y = x(1:100);
+stem(y);
+title(<span class="string">'Implulse Response'</span>);
+xlabel(<span class="string">'Samples'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(Cheby2SOS, Cheby2G);
+zplane(z,p);
+title(<span class="string">'Pole-Zero Plot'</span>);
+
+<span class="comment">%soundsc(noisy,fs);</span>
+<span class="comment">%soundsc(x,fs);</span>
+</pre><img vspace="5" hspace="5" src="b2005_05.png" alt=""> <img vspace="5" hspace="5" src="b2005_06.png" alt=""> <h2>Elliptic Filter<a name="5"></a></h2><pre class="codeinput">myellip = myEllip();
+
+load <span class="string">EllipSOS-G.mat</span>
+
+<span class="comment">%EllipticOrder = filtord(EllipSOS)</span>
+
+figure(<span class="string">'Name'</span>,<span class="string">'Elliptic Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(3,1,1);
+[h,w] = freqz(myellip);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title(<span class="string">'Magnitude Response'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (dB)'</span>);
+
+subplot(3,1,2)
+[gd] = grpdelay(myellip);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title(<span class="string">'Group Delay'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Group Delay (in samples)'</span>);
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title(<span class="string">'Magnitude Response of Passpand Ripple'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (linear)'</span>);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Elliptic Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(2,1,1);
+x = filter(myellip,noisy);
+y = x(1:100);
+stem(y);
+title(<span class="string">'Implulse Response'</span>);
+xlabel(<span class="string">'Samples'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(EllipSOS, EllipG);
+zplane(z,p);
+title(<span class="string">'Pole-Zero Plot'</span>);
+
+<span class="comment">%soundsc(noisy,fs);</span>
+<span class="comment">%soundsc(x,fs);</span>
+</pre><img vspace="5" hspace="5" src="b2005_07.png" alt=""> <img vspace="5" hspace="5" src="b2005_08.png" alt=""> <h2>Parks McClellan<a name="6"></a></h2><pre class="codeinput">rp = 3;           <span class="comment">% Passband ripple</span>
+rs = 95;          <span class="comment">% Stopband ripple</span>
+fs = 44100;       <span class="comment">% Sampling frequency</span>
+f = [2500 4000];  <span class="comment">% Cutoff frequencies</span>
+a = [1 0];        <span class="comment">% Desired amplitudes</span>
+<span class="comment">% Compute deviations</span>
+dev = [(10^(rp/20)-1)/(10^(rp/20)+1)  10^(-rs/20)];
+[n,fo,ao,w] = firpmord(f,a,dev,fs);
+myparksm = firpm(n,fo,ao,w);
+<span class="comment">% freqz(b,1,1024,fs);</span>
+<span class="comment">% title('Lowpass Filter Designed to Specifications');</span>
+
+<span class="comment">%ParksMcClellanOrder = n</span>
+
+figure(<span class="string">'Name'</span>,<span class="string">'Parks McClellan Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(3,1,1);
+[h,w] = freqz(myparksm);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title(<span class="string">'Magnitude Response'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (dB)'</span>);
+
+subplot(3,1,2)
+[gd] = grpdelay(myparksm);
+plot(w,gd);
+axis([0 pi 36 40])
+title(<span class="string">'Group Delay'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Group Delay (in samples)'</span>);
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title(<span class="string">'Magnitude Response of Passpand Ripple'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (linear)'</span>);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Parks McClellan Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(2,1,1);
+x = filter(myparksm,1,noisy);
+y = x(1:100);
+stem(y);
+title(<span class="string">'Implulse Response'</span>);
+xlabel(<span class="string">'Samples'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+zplane(myparksm);
+title(<span class="string">'Pole-Zero Plot'</span>);
+
+<span class="comment">%soundsc(noisy,fs);</span>
+<span class="comment">%soundsc(x,fs);</span>
+</pre><img vspace="5" hspace="5" src="b2005_09.png" alt=""> <img vspace="5" hspace="5" src="b2005_10.png" alt=""> <h2>Kaiser<a name="7"></a></h2><pre class="codeinput">mykai = myKai();
+
+load <span class="string">KaiCoef.mat</span>
+
+<span class="comment">%KaiserOrder = filtord(KaiCoef)</span>
+
+figure(<span class="string">'Name'</span>,<span class="string">'Kaiser Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(3,1,1);
+[h,w] = freqz(mykai);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title(<span class="string">'Magnitude Response'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (dB)'</span>);
+
+subplot(3,1,2)
+[gd] = grpdelay(mykai);
+plot(w,gd);
+axis([0 pi 89 90])
+title(<span class="string">'Group Delay'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Group Delay (in samples)'</span>);
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title(<span class="string">'Magnitude Response of Passpand Ripple'</span>);
+xlabel(<span class="string">'Frequency (w)'</span>);
+ylabel(<span class="string">'Magnitude (linear)'</span>);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Kaiser Filter'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'on'</span>);
+subplot(2,1,1);
+x = filter(mykai,noisy);
+y = x(1:100);
+stem(y);
+title(<span class="string">'Implulse Response'</span>);
+xlabel(<span class="string">'Samples'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+zplane(KaiCoef);
+title(<span class="string">'Pole-Zero Plot'</span>);
+
+<span class="comment">% soundsc(noisy,fs);</span>
+<span class="comment">% soundsc(x,fs);</span>
+
+<span class="comment">% Each of the above filters took away most if not all of the noise</span>
+<span class="comment">% surrounding the original speech.</span>
+</pre><img vspace="5" hspace="5" src="b2005_11.png" alt=""> <img vspace="5" hspace="5" src="b2005_12.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Jen Tashman, Joe Marcedes, John Biswakarma
+% ECE 114
+% MATLAB Assignment #3 (2005b): Removing Noise from a Speech Signal
+
+
+clear all; close all; clc;
+
+load projIB.mat
+
+%% Butterworth Filter
+
+mybutt = myButter();
+
+load ButSOS-G.mat
+
+%ButterworthOrder = filtord(ButSOS)
+
+figure('Name','Butterworth Filter','NumberTitle','on');
+subplot(3,1,1);
+[h,w] = freqz(mybutt);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title('Magnitude Response');
+xlabel('Frequency (w)');
+ylabel('Magnitude (dB)');
+
+subplot(3,1,2)
+[gd] = grpdelay(mybutt);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title('Group Delay');
+xlabel('Frequency (w)');
+ylabel('Group Delay (in samples)');
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title('Magnitude Response of Passpand Ripple');
+xlabel('Frequency (w)');
+ylabel('Magnitude (linear)');
+
+figure('Name','Butterworth Filter','NumberTitle','on');
+subplot(2,1,1);
+x = filter(mybutt,noisy);
+y = x(1:100);
+stem(y);
+title('Implulse Response');
+xlabel('Samples');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(ButSOS, ButG);
+zplane(z,p);
+title('Pole-Zero Plot');
+
+%soundsc(noisy,fs);
+%soundsc(x,fs);
+
+%% Chebyshev Type I Filter
+
+mycheb1 = myCheby1();
+
+load Cheby1SOS-G.mat
+
+%Chebyshev1Order = filtord(Cheby1SOS)
+
+figure('Name','Chebychev Type I Filter','NumberTitle','on');
+subplot(3,1,1);
+[h,w] = freqz(mycheb1);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title('Magnitude Response');
+xlabel('Frequency (w)');
+ylabel('Magnitude (dB)');
+
+subplot(3,1,2)
+[gd] = grpdelay(mycheb1);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title('Group Delay');
+xlabel('Frequency (w)');
+ylabel('Group Delay (in samples)');
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title('Magnitude Response of Passpand Ripple');
+xlabel('Frequency (w)');
+ylabel('Magnitude (linear)');
+
+figure('Name','Chebychev Type I Filter','NumberTitle','on');
+subplot(2,1,1);
+x = filter(mycheb1,noisy);
+y = x(1:100);
+stem(y);
+title('Implulse Response');
+xlabel('Samples');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(Cheby1SOS, Cheby1G);
+zplane(z,p);
+title('Pole-Zero Plot');
+
+%soundsc(noisy,fs);
+%soundsc(x,fs);
+
+%% Chebyshev Type II Filter
+
+mycheb2 = myCheby2();
+
+load Cheby2SOS-G.mat
+
+%Chebyshev1Order = filtord(Cheby2SOS)
+
+figure('Name','Chebychev Type II Filter','NumberTitle','on');
+subplot(3,1,1);
+[h,w] = freqz(mycheb2);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title('Magnitude Response');
+xlabel('Frequency (w)');
+ylabel('Magnitude (dB)');
+
+subplot(3,1,2)
+[gd] = grpdelay(mycheb2);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title('Group Delay');
+xlabel('Frequency (w)');
+ylabel('Group Delay (in samples)');
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title('Magnitude Response of Passpand Ripple');
+xlabel('Frequency (w)');
+ylabel('Magnitude (linear)');
+
+figure('Name','Chebychev Type II Filter','NumberTitle','on');
+subplot(2,1,1);
+x = filter(mycheb2,noisy);
+y = x(1:100);
+stem(y);
+title('Implulse Response');
+xlabel('Samples');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(Cheby2SOS, Cheby2G);
+zplane(z,p);
+title('Pole-Zero Plot');
+
+%soundsc(noisy,fs);
+%soundsc(x,fs);
+
+%% Elliptic Filter
+
+myellip = myEllip();
+
+load EllipSOS-G.mat
+
+%EllipticOrder = filtord(EllipSOS)
+
+figure('Name','Elliptic Filter','NumberTitle','on');
+subplot(3,1,1);
+[h,w] = freqz(myellip);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title('Magnitude Response');
+xlabel('Frequency (w)');
+ylabel('Magnitude (dB)');
+
+subplot(3,1,2)
+[gd] = grpdelay(myellip);
+plot(w,gd);
+axis([0 pi min(gd) max(gd)])
+title('Group Delay');
+xlabel('Frequency (w)');
+ylabel('Group Delay (in samples)');
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title('Magnitude Response of Passpand Ripple');
+xlabel('Frequency (w)');
+ylabel('Magnitude (linear)');
+
+figure('Name','Elliptic Filter','NumberTitle','on');
+subplot(2,1,1);
+x = filter(myellip,noisy);
+y = x(1:100);
+stem(y);
+title('Implulse Response');
+xlabel('Samples');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+[z,p,k] = sos2zp(EllipSOS, EllipG);
+zplane(z,p);
+title('Pole-Zero Plot');
+
+%soundsc(noisy,fs);
+%soundsc(x,fs);
+
+%% Parks McClellan
+
+rp = 3;           % Passband ripple
+rs = 95;          % Stopband ripple
+fs = 44100;       % Sampling frequency
+f = [2500 4000];  % Cutoff frequencies
+a = [1 0];        % Desired amplitudes
+% Compute deviations
+dev = [(10^(rp/20)-1)/(10^(rp/20)+1)  10^(-rs/20)]; 
+[n,fo,ao,w] = firpmord(f,a,dev,fs);
+myparksm = firpm(n,fo,ao,w);
+% freqz(b,1,1024,fs);
+% title('Lowpass Filter Designed to Specifications');
+
+%ParksMcClellanOrder = n
+
+figure('Name','Parks McClellan Filter','NumberTitle','on');
+subplot(3,1,1);
+[h,w] = freqz(myparksm);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title('Magnitude Response');
+xlabel('Frequency (w)');
+ylabel('Magnitude (dB)');
+
+subplot(3,1,2)
+[gd] = grpdelay(myparksm);
+plot(w,gd);
+axis([0 pi 36 40])
+title('Group Delay');
+xlabel('Frequency (w)');
+ylabel('Group Delay (in samples)');
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title('Magnitude Response of Passpand Ripple');
+xlabel('Frequency (w)');
+ylabel('Magnitude (linear)');
+
+figure('Name','Parks McClellan Filter','NumberTitle','on');
+subplot(2,1,1);
+x = filter(myparksm,1,noisy);
+y = x(1:100);
+stem(y);
+title('Implulse Response');
+xlabel('Samples');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+zplane(myparksm);
+title('Pole-Zero Plot');
+
+%soundsc(noisy,fs);
+%soundsc(x,fs);
+
+%% Kaiser
+
+mykai = myKai();
+
+load KaiCoef.mat
+
+%KaiserOrder = filtord(KaiCoef)
+
+figure('Name','Kaiser Filter','NumberTitle','on');
+subplot(3,1,1);
+[h,w] = freqz(mykai);
+h1 = 20*log10(abs(h));
+plot(w, h1);
+axis([0 pi min(h1) max(h1)+50]);
+title('Magnitude Response');
+xlabel('Frequency (w)');
+ylabel('Magnitude (dB)');
+
+subplot(3,1,2)
+[gd] = grpdelay(mykai);
+plot(w,gd);
+axis([0 pi 89 90])
+title('Group Delay');
+xlabel('Frequency (w)');
+ylabel('Group Delay (in samples)');
+
+subplot(3,1,3)
+plot(w,abs(h))
+axis([0 pi min(abs(h)) max(abs(h))+.5]);
+title('Magnitude Response of Passpand Ripple');
+xlabel('Frequency (w)');
+ylabel('Magnitude (linear)');
+
+figure('Name','Kaiser Filter','NumberTitle','on');
+subplot(2,1,1);
+x = filter(mykai,noisy);
+y = x(1:100);
+stem(y);
+title('Implulse Response');
+xlabel('Samples');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+zplane(KaiCoef);
+title('Pole-Zero Plot');
+
+% soundsc(noisy,fs);
+% soundsc(x,fs);
+
+% Each of the above filters took away most if not all of the noise
+% surrounding the original speech.
+##### SOURCE END #####
+--></body></html>
